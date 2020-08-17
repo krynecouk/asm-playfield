@@ -23,9 +23,9 @@ NextFrame:
     sta VSYNC
     sta VBLANK
     
-    REPEAT 3
-        sta WSYNC
-    REPEND
+    sta WSYNC
+    sta WSYNC
+    sta WSYNC
 
     lda #0
     sta VSYNC
@@ -33,11 +33,11 @@ NextFrame:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; Vertical Blank
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    lda #%10
-
-    REPEAT 37
-        sta WSYNC
-    REPEND
+    ldx #37
+VBlankLoop:
+    sta WSYNC
+    dex
+    bne VBlankLoop
 
     lda #0
     stx VBLANK
@@ -55,6 +55,8 @@ NextFrame:
     stx PF0
     stx PF1
     stx PF2
+
+BlankLineLoop:  
     REPEAT 7
         stx WSYNC
     REPEND
@@ -74,14 +76,18 @@ NextFrame:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; Print main area
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ldx #%00100000
+    ldx #%01100000
     stx PF0
     ldx #0
     stx PF1
+    ldx #%10000000
     stx PF2
-    REPEAT 164
-        stx WSYNC
-    REPEND
+
+    ldx #164
+MainAreaLoop:
+    stx WSYNC
+    dex
+    bne MainAreaLoop
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; Print lower border
@@ -111,9 +117,13 @@ NextFrame:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     lda #%10
     sta VBLANK
-    REPEAT 30
-        sta WSYNC
-    REPEND
+
+    ldx #30
+OverscanLoop:    
+    sta WSYNC
+    dex
+    bne OverscanLoop
+
     lda #0
     sta VBLANK
     
